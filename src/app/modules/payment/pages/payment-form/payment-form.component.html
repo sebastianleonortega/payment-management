@@ -1,1 +1,152 @@
-<p>payment-form works!</p>
+<form [formGroup]="formPayment"
+      (ngSubmit)="onSubmit()"
+      class="grid grid-cols-2 gap-4">
+
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Empresa</label>
+    <input pInputText
+           formControlName="company"
+           placeholder="Nombre de la empresa"
+           class="w-full h-[38px] border rounded-md px-2"/>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('company') }}</small>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Fecha</label>
+    <p-calendar formControlName="date"
+                dateFormat="yy-mm-dd"
+                showIcon="true"
+                [style]="{'width':'100%','height':'38px'}"
+                class="border rounded-md"></p-calendar>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('date') }}</small>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Área de operación</label>
+    <input pInputText
+           formControlName="operationArea"
+           placeholder="Ej: Finanzas"
+           class="w-full h-[38px] border rounded-md px-2"/>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('operationArea') }}</small>
+  </div>
+
+  <!-- Rubro -->
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Rubro</label>
+    <input pInputText
+           formControlName="category"
+           placeholder="Ej: Servicios"
+           class="w-full h-[38px] border rounded-md px-2"/>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('category') }}</small>
+  </div>
+
+  <!-- Tercero -->
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Tercero</label>
+    <input pInputText
+           formControlName="thirdParty"
+           placeholder="Nombre del tercero"
+           class="w-full h-[38px] border rounded-md px-2"/>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('thirdParty') }}</small>
+  </div>
+
+  <!-- Valor -->
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Valor de operación</label>
+    <input type="number"
+           pInputText
+           formControlName="operationValue"
+           placeholder="0.00"
+           class="w-full h-[38px] border rounded-md px-2 text-right"/>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('operationValue') }}</small>
+  </div>
+
+  <!-- Estado -->
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Estado del pago</label>
+    <p-dropdown
+      [options]="paymentStatusOptions"
+      formControlName="paymentStatus"
+      placeholder="Estado del pago"
+      styleClass="form-dropdown">
+    </p-dropdown>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('paymentStatus') }}</small>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="text-sm font-medium text-gray-700">Método de pago</label>
+    <p-dropdown
+      [options]="paymentMethodOptions"
+      formControlName="paymentMethod"
+      placeholder="Método de pago"
+      styleClass="form-dropdown">
+    </p-dropdown>
+    <small class="text-red-500 text-xs">{{ getErrorMessage('paymentMethod') }}</small>
+  </div>
+
+  <div class="col-span-2 flex items-center gap-2">
+    <p-checkbox formControlName="hasBudget" binary="true"></p-checkbox>
+    <label class="text-sm font-medium text-gray-700">¿Tiene presupuesto?</label>
+  </div>
+
+
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium mb-1">Factura</label>
+    <div class="w-full">
+      <input
+        type="file"
+        id="invoice"
+        class="hidden"
+        (change)="onFileSelect($event, 'invoiceUrl')"
+        accept=".pdf,image/*"/>
+
+      <label
+        for="invoice"
+        class="flex items-center justify-center h-[80px] w-full cursor-pointer
+               border-2 border-dashed border-gray-400 rounded-md
+               text-gray-500 text-sm font-medium
+               hover:border-blue-500 hover:text-blue-500 transition">
+
+        @if (selectedFiles.invoiceUrl) {
+          📄 {{ selectedFiles.invoiceUrl.name }}
+          ({{ selectedFiles.invoiceUrl.size / 1024 | number:'1.0-0' }} KB)
+        } @else {
+          <span>Cargar evidencia</span>
+        }
+      </label>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <label class="block text-sm font-medium mb-1">Soporte</label>
+    <div class="w-full">
+      <input
+        type="file"
+        id="support"
+        class="hidden"
+        (change)="onFileSelect($event, 'supportUrl')"
+        accept=".pdf,image/*"/>
+
+      <label
+        for="support"
+        class="flex items-center justify-center h-[80px] w-full cursor-pointer
+               border-2 border-dashed border-gray-400 rounded-md
+               text-gray-500 text-sm font-medium
+               hover:border-blue-500 hover:text-blue-500 transition">
+
+        @if (selectedFiles.supportUrl) {
+          📄 {{ selectedFiles.supportUrl.name }}
+          ({{ selectedFiles.supportUrl.size / 1024 | number:'1.0-0' }} KB)
+        } @else {
+          <span>Cargar evidencia</span>
+        }
+      </label>
+    </div>
+  </div>
+
+  <div class="col-span-2 flex justify-end">
+    <button pButton type="submit"
+            [label]="initialData ? 'Actualizar' : 'Guardar'"
+            [disabled]="formPayment.invalid"
+            class="h-[38px] p-button-rounded px-3 bg-gray-600 text-white p-button-sm p-button-secondary"
+            ></button>
+  </div>
+</form>

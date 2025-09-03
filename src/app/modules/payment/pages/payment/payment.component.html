@@ -1,1 +1,113 @@
-<p>payment works!</p>
+<section class="p-4">
+  <div class="flex justify-between">
+    <h1 class="text-xl font-semibold size-7 mb-4">Pagos</h1>
+    <button pButton class="bg-gray-700 cursor-pointer text-white p-2 mb-3 rounded-lg" (click)="createPayment()">
+      Registrar pago
+    </button>
+  </div>
+  <ng-template pTemplate="caption">
+    <div class="flex justify-between items-center">
+    <span class="p-input-icon-left w-1/3">
+      <i class="pi pi-search"></i>
+      <input #searchBox
+             pInputText
+             type="text"
+             (input)="dt.filterGlobal(searchBox.value, 'contains')"
+             placeholder="Buscar por tercero, rubro o empresa"
+             class="w-full" />
+    </span>
+
+      <!-- aquí puedes meter botones export / crear si quieres -->
+    </div>
+  </ng-template>
+  <ng-container>
+    <p-table
+      #dt
+      [globalFilterFields]="['thirdParty','company','category']"
+      [value]="payments"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10,20,50]"
+      [tableStyle]="{ 'min-width': '80rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fecha <p-columnFilter field="date" matchMode="between" display="menu"></p-columnFilter> </th>
+          <th>Empresa  <p-columnFilter field="company" matchMode="equals" display="menu"></p-columnFilter></th>
+          <th>Area de operacion</th>
+          <th>Rubro</th>
+          <th>Tercero</th>
+          <th>Valor de operacion</th>
+          <th>Estado <p-columnFilter field="paymentStatus" matchMode="in" display="menu"></p-columnFilter></th>
+          <th>Forma de pago</th>
+          <th style="width: 6rem;" class="text-center">Opciones</th>
+        </tr>
+      </ng-template>
+
+        <ng-template pTemplate="body" let-p>
+          <tr>
+            <td>{{ p.date }}</td>
+            <td>{{ p.company }}</td>
+            <td>{{ p.operationArea }}</td>
+            <td>{{ p.category }}</td>
+            <td>{{ p.thirdParty }}</td>
+            <td class="text-right">
+              {{ p.operationValue | currency:'COP':'symbol-narrow' }}
+            </td>
+            <td class="text-center">
+              <p-tag
+                [value]="p.paymentStatus"
+                [severity]="
+                  p.paymentStatus === 'AUTORIZADO'
+                    ? 'success'
+                    : p.paymentStatus === 'PENDIENTE'
+                    ? 'warning'
+                    : 'danger'
+                "></p-tag>
+            </td>
+            <td>{{p.paymentMethod}}</td>
+            <td class="flex justify-center">
+              <button
+                pButton
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-sm p-button-secondary"
+                (click)="onEdit(p)"
+                title="Editar"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7">
+              <div class="grid grid-cols-1 gap-2">
+                <p-skeleton height="2.5rem"></p-skeleton>
+                <p-skeleton height="2.5rem"></p-skeleton>
+                <p-skeleton height="2.5rem"></p-skeleton>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+          <td colspan="5">Registros filtrados: {{ dt.filteredValue?.length || payments.length }}</td>
+          <td class="text-right font-semibold">
+            {{ getFilteredSum(dt) | currency:'COP':'symbol-narrow' }}
+          </td>
+          <td colspan="3"></td>
+        </tr>
+      </ng-template>
+
+    </p-table>
+  </ng-container>
+</section>
+<p-dialog
+  header="Crear pago"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '40rem'}">
+  <app-payment-form
+    [initialData]="selectedPayment"
+    (formSubmit)="createOrUpdatePayment($event)">
+  </app-payment-form>
+</p-dialog>
