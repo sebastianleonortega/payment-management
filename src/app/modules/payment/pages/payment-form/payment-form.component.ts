@@ -30,8 +30,8 @@ export class PaymentFormComponent implements OnInit {
   @Input() initialData: any = null;
   @Output() formSubmit = new EventEmitter<any>();
 
-  paymentStatusOptions = ['PENDIENTE', 'AUTORIZADO', 'RECHAZADO'];
-  paymentMethodOptions = ['CASH', 'TRANSFER', 'CHECK'];
+  paymentStatusOptions = ['Pendiente', 'Autorizado', 'Rechazado'];
+  paymentMethodOptions = ['Efectivo', 'Transferencia', 'Cheque'];
 
 
   formPayment : FormGroup = new FormGroup({});
@@ -51,8 +51,8 @@ export class PaymentFormComponent implements OnInit {
       category: new FormControl('', [Validators.required]),
       thirdParty: new FormControl('', [Validators.required, Validators.minLength(3)]),
       operationValue: new FormControl('', [Validators.required, Validators.min(1)]),
-      paymentStatus: new FormControl('PENDIENTE', [Validators.required]), // valor por defecto
-      incomeOrExpense: new FormControl('GASTO', [Validators.required]),
+      paymentStatus: new FormControl('Pendiente', [Validators.required]),
+      incomeOrExpense: new FormControl('Gasto', [Validators.required]),
       paymentMethod: new FormControl('', [Validators.required]),
       hasBudget: new FormControl(false),
       invoiceUrl: new FormControl(''),
@@ -95,7 +95,7 @@ export class PaymentFormComponent implements OnInit {
         traceability: this.traceability,
       };
 
-      this.formSubmit.emit(result); // 👈 lo enviamos al padre
+      this.formSubmit.emit(result);
     } else {
       this.formPayment.markAllAsTouched();
     }
